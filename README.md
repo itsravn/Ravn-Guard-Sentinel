@@ -1,42 +1,36 @@
 # 🛡️ Ravn-Guard-Sentinel
-### *Advanced Packet-Injection Firewall Framework*
 
-> **"Silent. Invisible. Impenetrable."**
+![Security](https://img.shields.io/badge/Security-Enterprise-red?style=for-the-badge&logo=shield&logoColor=white)
+![Netty](https://img.shields.io/badge/Netty-Native%20Injection-grey?style=for-the-badge&logo=netty&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![License](https://img.shields.io/badge/License-Proprietary-blue?style=for-the-badge)
 
-Ravn-Guard-Sentinel is a high-performance network security layer designed specifically for Spigot-based infrastructures. Operating at the Netty channel level, it inspects, filters, and neutralizes malicious traffic *before* it reaches the main server thread.
+> **"The First Line of Defense."**
+> A kernel-level packet filtering system designed to neutralize attacks before they reach the main thread.
 
----
+**Ravn-Guard-Sentinel** operates directly within the Netty pipeline, injecting custom channel handlers to analyze incoming traffic byte-by-byte. Unlike standard plugins, Sentinel drops malicious packets at the socket level, ensuring zero performance impact on the server tick loop.
 
-## 🚀 Features
+### ⚔️ Defense Capabilities
+* **Netty Injection:** Intercepts traffic at the lowest level possible in the JVM.
+* **NullPing Mitigation:** Automatically closes connections that send malformed handshake packets.
+* **Packet Limiter:** Intelligent rate-limiting per IP to prevent packet flood exploits.
+* **Decoder Analysis:** Detects and blocks illegal NBT tags that cause server crashes (Book exploits, heavy items).
 
-### ⚡ **NullPing Interception**
-Eliminates server crashes caused by malformed ping packets. Sentinel's deep packet inspection identifies null payloads instantly and terminates the connection before memory allocation occurs.
+### ⚙️ Configuration (sentinel.yml)
 
-### 🤖 **Anti-Bot Heuristics**
-Sophisticated pattern recognition algorithms detect synthetic traffic behaviors. 
-- **Rate Limiting**: Microsecond-precision packet counting.
-- **Handshake Verification**: Validates protocol sequences to ensure human origin.
+```yaml
+security-level: HIGH # LOW, MEDIUM, HIGH, PARANOID
 
-### 💉 **Netty-Level Injection**
-By injecting custom `ChannelDuplexHandlers` directly into the player's pipeline, Sentinel incurs **0.00ms** latency overhead on the main tick loop.
+packet-filter:
+  max-packets-per-sec: 50
+  block-unknown-payloads: true
+  
+firewall:
+  geo-block:
+    - "CN" # China
+    - "RU" # Russia
+  whitelist-mode: false
 
----
-
-## 🛠️ Installation
-
-1. Add `ravn-guard-sentinel` to your plugin folder.
-2. Configuration is automatically generated at `plugins/RavnGuard/config.yml`.
-3. Restart your server. The firewall initializes during the `onload` phase for maximum protection.
-
-## 📦 API Usage
-
-Developers can register custom `AttackFilters` to extend protection logic.
-
-```java
-PacketInjector injector = new PacketInjector(getLogger());
-// Register your custom filters...
-```
-
----
-
-*Powered by Ravn Technologies. Secure your infrastructure today.*
+alerts:
+  webhook: "[https://discord.com/api/webhooks/](https://discord.com/api/webhooks/)..."
+  notify-admins: true
